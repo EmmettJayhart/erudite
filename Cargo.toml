@@ -1,0 +1,14 @@
+[package]
+authors     = ["Emmett Jayhart<erudite@jayhart.io>"]
+description = "Erudite is a basic machine learning toolkit for rust."
+edition     = "2021"
+license     = "Apache-2.0 OR MIT"
+name        = "erudite"
+readme      = "README.md"
+repository  = "https://github.com/EmmettJayhart/erudite"
+resolver    = "2"
+version     = "0.3.2"
+
+[dependencies]
+ndarray      = { version = "0.15.6", features = ["rayon", "approx", "blas"] }
+ndarray-rand = { version = "0.15.0", features = ["quickcheck"] }

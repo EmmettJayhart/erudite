@@ -1,0 +1,102 @@
+name: Generate Candidate
+
+on:
+  workflow_run:
+    workflows: ["Test Dev"]
+    types:
+      - completed
+
+jobs:
+  generate_candidate:
+    if: ${{ github.event.workflow_run.conclusion  == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        run: rustup update stable && rustup default stable
+
+      - name: Setup Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "<41898282+github-actions[bot]@users.noreply.github.com>"
+          git fetch --all --tags
+
+      - name: Push to Local Prod
+        run: |
+          git checkout prod
+          git reset --hard dev
+
+      - name: Extract Version from Cargo.toml
+        run: |
+          version=$(grep ^version Cargo.toml | sed -E 's/version *= *"([^"]+)"/\1/')
+          echo "version=$version" >> $GITHUB_ENV
+
+      - name: Get Latest Tag and Determine Candidate Info
+        run: |
+          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+          base_tag="$latest_tag"
+          candidate_number=0
+          if [[ "$latest_tag" =~ ^(.*)(c[0-9]+)$ ]]; then
+            base_tag="${BASH_REMATCH[1]}"
+            candidate_number=$(echo "${BASH_REMATCH[2]}" | sed 's/c//')
+          fi
+          echo "latest_tag=$latest_tag" >> $GITHUB_ENV
+          echo "base_tag=$base_tag" >> $GITHUB_ENV
+          echo "candidate_number=$candidate_number" >> $GITHUB_ENV
+
+      - name: Validate Version and Determine Next Candidate Tag
+        run: |
+          version="${{ env.version }}"
+          base_tag="${{ env.base_tag }}"
+          candidate_number="${{ env.candidate_number }}"
+
+          if [ "$candidate_number" -gt 0 ]; then
+            if [ "$version" != "$base_tag" ]; then
+              echo "Error: The version in Cargo.toml ($version) does not match the base version of the latest candidate tag ($base_tag)."
+              exit 1
+            fi
+            candidate_number=$((candidate_number + 1))
+            candidate_tag="${version}c${candidate_number}"
+          else
+            if [ "$(printf '%s\n' "$base_tag" "$version" | sort -V | head -n1)" != "$base_tag" ] || [ "$base_tag" = "$version" ]; then
+              echo "Error: The version in Cargo.toml ($version) must be strictly greater than the latest release version ($base_tag)."
+              exit 1
+            fi
+            candidate_tag="${version}c1"
+          fi
+
+          echo "candidate_tag=$candidate_tag" >> $GITHUB_ENV
+
+      - name: Tag on Candidate
+        run: |
+          git tag ${{ env.candidate_tag }}
+          git push --tags
+
+      - name: Create Pull Request to Prod
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Release ${{ env.version }}"
+          branch: staging
+          committer:
+            github-actions[bot]
+            <41898282+github-actions[bot]@users.noreply.github.com>
+          author:
+            ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor
+            }}@users.noreply.github.com>
+          signoff: false
+          delete-branch: false
+          base: prod
+          title: "Release ${{ env.version }}"
+          body: |
+            Automatically generated PR to merge changes from staging to prod with candidate version ${{ env.candidate_tag }}.
+          labels: |
+            release-candidate
+          assignees: |
+            ${{ github.actor }}
+          reviewers: |
+            EmmettJayhart
+          draft: false
