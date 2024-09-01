@@ -5,14 +5,10 @@ on:
     workflows: ["Test Dev"]
     types:
       - completed
-    branches:
-      - dev
 
 jobs:
   generate_candidate:
-    if:
-      ${{ github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.head_branch == 'dev' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success'}}
     runs-on: ubuntu-latest
 
     steps:
@@ -31,7 +27,7 @@ jobs:
       - name: Merge to Local Prod
         run: |
           git checkout prod
-          git merge dev --strategy-option theirs
+          git merge origin/dev --strategy-option theirs
 
       - name: Extract Version from Cargo.toml
         run: |
