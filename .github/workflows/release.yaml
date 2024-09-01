@@ -5,6 +5,8 @@ on:
     workflows: ["Test Prod"]
     types:
       - completed
+    branches:
+      - prod
 
 jobs:
   tag_and_publish:

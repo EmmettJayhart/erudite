@@ -5,6 +5,8 @@ on:
     workflows: ["Test Dev"]
     types:
       - completed
+    branches:
+      - dev
 
 jobs:
   generate_candidate:
