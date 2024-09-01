@@ -10,5 +10,5 @@ resolver    = "2"
 version     = "0.3.3"
 
 [dependencies]
-ndarray      = { version = "0.15.6", features = ["rayon", "approx", "blas"] }
+ndarray      = { version = "0.15.6", features = ["approx", "rayon", "blas"] }
 ndarray-rand = { version = "0.15.0", features = ["quickcheck"] }
