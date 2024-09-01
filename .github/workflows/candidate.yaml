@@ -28,10 +28,10 @@ jobs:
           git config --global user.email "<41898282+github-actions[bot]@users.noreply.github.com>"
           git fetch --all --tags
 
-      - name: Push to Local Prod
+      - name: Merge to Local Prod
         run: |
           git checkout prod
-          git reset --hard origin/dev
+          git merge dev --strategy-option theirs
 
       - name: Extract Version from Cargo.toml
         run: |
