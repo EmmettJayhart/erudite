@@ -79,7 +79,7 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Release ${{ env.version }}"
+          commit-message: "Candidate ${{ env.candidate_tag }}"
           branch: staging
           committer:
             github-actions[bot]
@@ -90,9 +90,9 @@ jobs:
           signoff: false
           delete-branch: false
           base: prod
-          title: "Release ${{ env.version }}"
+          title: "Candidate ${{ env.candidate_tag }}"
           body: |
-            Automatically generated PR to merge changes from staging to prod with candidate version ${{ env.candidate_tag }}.
+            Automatically generated PR to merge changes from staging to prod.
           labels: |
             release-candidate
           assignees: |
