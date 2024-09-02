@@ -76,10 +76,11 @@ jobs:
           git push --tags
 
       - name: Create Pull Request to Prod
+        id: pr
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Candidate ${{ env.candidate_tag }}"
+          commit-message: "Release ${{ env.version }}"
           branch: staging
           committer:
             github-actions[bot]
@@ -90,7 +91,7 @@ jobs:
           signoff: false
           delete-branch: false
           base: prod
-          title: "Candidate ${{ env.candidate_tag }}"
+          title: "Release ${{ env.version }}"
           body: |
             Automatically generated PR to merge changes from staging to prod.
           labels: |
@@ -100,3 +101,11 @@ jobs:
           reviewers: |
             EmmettJayhart
           draft: false
+
+      - name: Comment on PR
+        if: ${{ steps.pr.outputs.pull-request-number }}
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          pr_number: ${{ steps.pr.outputs.pull-request-number }}
+          message: |
+            Candidate ${{ env.candidate_tag }} is ready for review.
