@@ -1,18 +1,18 @@
 # Erudite
 
-[![Crate][crate-badge]][crate-url] [![Docs][docs-badge]][docs-url]
-[![License][license-badge]][license-url] [![CI][ci-badge]][ci-url]
+<!-- [![Crate][crate-badge]][crate-url] -->
+[![Docs][docs-badge]][docs-url]
+[![License][license-badge]][license-url]
+[![CI][ci-badge]][ci-url]
 
-[crate-badge]: https://img.shields.io/crates/v/erudite.svg
-[crate-url]: https://crates.io/crates/erudite
+<!-- [crate-badge]: https://img.shields.io/crates/v/erudite.svg
+[crate-url]: https://crates.io/crates/erudite -->
 [docs-badge]: https://docs.rs/erudite/badge.svg
 [docs-url]: https://docs.rs/erudite
 [license-badge]: https://img.shields.io/crates/l/erudite.svg
 [license-url]: #license
-[ci-badge]:
-    https://img.shields.io/github/actions/workflow/status/EmmettJayhart/erudite/ci.yaml?label=CI
-[ci-url]:
-    https://github.com/EmmettJayhart/erudite/actions?query=workflow%3Aci+branch%3Amain
+[ci-badge]: https://img.shields.io/github/actions/workflow/status/EmmettJayhart/erudite/ci.yaml?label=CI
+[ci-url]: https://github.com/EmmettJayhart/erudite/actions?query=workflow%3Aci+branch%3Amain
 
 Erudite is an adaptive agent built on [Burn](https://crates.io/crates/burn).
 
