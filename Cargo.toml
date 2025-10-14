@@ -1,0 +1,12 @@
+[package]
+authors     = ["Emmett Aljneibi<emmett@jayhart.io>"]
+description = "Erudite is an adaptive agent built on Burn."
+edition     = "2024"
+license     = "Apache-2.0 OR MIT"
+name        = "erudite"
+readme      = "README.md"
+repository  = "https://github.com/EmmettJayhart/erudite"
+resolver    = "2"
+version     = "0.4.0"
+
+[dependencies]
